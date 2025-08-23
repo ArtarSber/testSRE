@@ -1,0 +1,21 @@
+zabbixServer:
+  replicas: 1
+  service:
+    type: ClusterIP
+
+zabbixWeb:
+  enabled: true
+  image:
+    repository: zabbix/zabbix-web-apache-mysql
+    tag: alpine-6.4-latest
+  service:
+    type: ClusterIP
+    port: 8080
+
+mariadb:
+  enabled: true
+  auth:
+    rootPassword: rootpass
+    database: zabbix
+    username: zabbix
+    password: zabbixpass

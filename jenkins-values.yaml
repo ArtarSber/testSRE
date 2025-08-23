@@ -1,0 +1,16 @@
+controller:
+  serviceType: ClusterIP
+  installPlugins:
+    - kubernetes
+    - workflow-aggregator
+    - git
+    - configuration-as-code
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "1Gi"
+    limits:
+      cpu: "1"
+      memory: "2Gi"
+persistence:
+  enabled: false

@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: web
+  namespace: web
+spec:
+  hosts: ["*"]
+  gateways: ["web/web-gateway"]
+  http:
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: web.web.svc.cluster.local
+            port:
+              number: 80
