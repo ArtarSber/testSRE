@@ -1,0 +1,49 @@
+---
+- name: Configure VM2 from Jenkins
+  hosts: vm2
+  become: yes
+  
+  tasks:
+    - name: Install required packages
+      yum:
+        name:
+          - htop
+          - tmux 
+          - jq
+        state: present
+        
+    - name: Configure SSH to disable root login
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PermitRootLogin'
+        line: 'PermitRootLogin no'
+        
+    - name: Configure SSH to disable password auth
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PasswordAuthentication'
+        line: 'PasswordAuthentication no'
+        
+    - name: Configure SSH to enable key auth
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PubkeyAuthentication'
+        line: 'PubkeyAuthentication yes'
+        
+    - name: Restart SSH service
+      service:
+        name: sshd
+        state: restarted
+        
+    - name: Verify packages installed
+      command: rpm -q {{ item }}
+      with_items:
+        - htop
+        - tmux
+        - jq
+      register: package_check
+      
+    - name: Show installation results
+      debug:
+        msg: "Package {{ item.item }}: {{ item.stdout }}"
+      with_items: "{{ package_check.results }}"
